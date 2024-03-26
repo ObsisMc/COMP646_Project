@@ -3,7 +3,7 @@
 
 * Select a dataset (eg. image-net only sample some classes)
 * get segment pool (How to save?)
-* set a metric to measure how match between mask and segment retriced by CLIP
+* set a metric to measure how match between mask and segment retrived by CLIP
 
 
 # Progress Report
