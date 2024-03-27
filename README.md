@@ -1,11 +1,13 @@
-
 # Main Workflow
 
-* Select a dataset (eg. image-net only sample some classes)
-* get segment pool (How to save?)
-* set a metric to measure how match between mask and segment retrived by CLIP
+* Model (Ground SAM + Stable Diffusion + CLIP)
+* Select a dataset (Pascal 2010 with segments pool)
+* User Input (Image and Prompt (click?) )
 
 
 # Progress Report
 
-Just show the dataset we use, and give some example after segment.
+* Dataset
+* Validate idea (use Pascal as segments pool)
+* Match images' seams (SURF...)
+* Output image
