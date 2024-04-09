@@ -1,5 +1,23 @@
 # COMP646 Project: Image Collages
 
+## Remove Anything
+1. cd COMP646_Project/remove_anything
+2. python remove_anything.py \
+    --input_img ./remove-anything/dog.jpg \
+    --coords_type key_in \
+    --point_coords 200 450 \
+    --point_labels 1 \
+    --dilate_kernel_size 15 \
+    --output_dir ./results \
+    --sam_model_type "vit_h" \
+    --sam_ckpt {YOUR PRETRAINED MODEL PATH}/pretrained_models/sam_vit_h_4b8939.pth \
+    --lama_config ./lama/configs/prediction/default.yaml \
+    --lama_ckpt {YOUR PRETRAINED MODEL PATH}/pretrained_models/big-lama
+3. Directly download pretrained_models from this link: https://drive.google.com/drive/folders/1ST0aRbDRZGli0r7OVVOQvXwtadMCuWXg
+
+
+
+
 ## Main components and technologies
 
 * Dataset and Segment Pool
