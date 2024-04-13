@@ -14,6 +14,8 @@
     --lama_config ./lama/configs/prediction/default.yaml \
     --lama_ckpt {YOUR PRETRAINED MODEL PATH}/pretrained_models/big-lama
 3. Directly download pretrained_models from this link: https://drive.google.com/drive/folders/1ST0aRbDRZGli0r7OVVOQvXwtadMCuWXg
+pip install gdown
+gdown https://drive.google.com/drive/folders/1wpY-upCo4GIW4wVPnlMh_ym779lLIG2A-O {removing_anything folder}/pretrained_models--folder
 
 
 

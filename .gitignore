@@ -1,2 +1,10 @@
 segments_pool
+
 __pycache__
+
+remove_anything/pretrained_models/
+
+VOCdevkit/
+
+VOCtrainval_11-May-2012.tar
+
