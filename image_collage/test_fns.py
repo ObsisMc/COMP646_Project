@@ -33,25 +33,26 @@ class TestImageProcesser:
         
         
         masks = test_mask(img, coords, [1], self.sam_model_type, self.sam_ckpt)
-        mask = masks[1]
-        self.mask = mask == 255
+        self.mask = masks[1]
         
         # store original img
         self.original = img.copy()
         
         # paint mask
         colored_mask = np.zeros_like(img)
-        colored_mask[self.mask] = (255, 0, 0) # red
+        colored_mask[self.mask == 255] = (255, 0, 0) # red
         img = cv2.addWeighted(img, 1, colored_mask, 0.65, 0)
         
         return img
     
-    def replace(self, img, text):
-
-        img[self.mask] = np.array([255,255,255])
+    def replace(self, img, text_prompt):
+        if self.original is None:
+            return img
         
-        # remove_anything(img, dilate_kernel_size, lama_config, lama_ckpt, masks)
+        mask_centers, res_inpaint_list = remove_anything(self.original, self.dilate_kernel_size, self.lama_config, self.lama_ckpt, [self.mask])
+        mask_center, img = mask_centers[0], res_inpaint_list[0]
         
         self.mask = None
-        self.img_masked = None
+        self.original = None
+        
         return img
