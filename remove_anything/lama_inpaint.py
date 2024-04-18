@@ -20,7 +20,7 @@ from saicinpainting.evaluation.utils import move_to_device
 from saicinpainting.training.trainers import load_checkpoint
 from saicinpainting.evaluation.data import pad_tensor_to_modulo
 
-from utils import load_img_to_array, save_array_to_img
+from remove_anything.utils import load_img_to_array, save_array_to_img
 
 
 @torch.no_grad()

@@ -5,11 +5,10 @@ import numpy as np
 from pathlib import Path
 from matplotlib import pyplot as plt
 import os
-os.chdir('./remove_anything')
-print("工作目录:", os.getcwd())
-from sam_segment import predict_masks_with_sam
-from lama_inpaint import inpaint_img_with_lama
-from utils import dilate_mask
+
+from remove_anything.sam_segment import predict_masks_with_sam
+from remove_anything.lama_inpaint import inpaint_img_with_lama
+from remove_anything.utils import dilate_mask
 
 def test_mask(img, point_coords, point_labels,
                 sam_model_type, sam_ckpt):
