@@ -7,37 +7,36 @@ from PIL import Image
 import ast  # For converting string representations of lists into lists
 
 class CLIPModelWrapper:
-    class Clip:
-        def __init__(self, model_name="openai/clip-vit-base-patch32", device="cuda", csv_file='../image_embeddings.csv'):
-            """
-            Initializes a Clip object.
+    def __init__(self, model_name="openai/clip-vit-base-patch32", device="cuda", csv_file='../image_embeddings.csv'):
+        """
+        Initializes a Clip object.
 
-            Args:
-                model_name (str, optional): The name or path of the pre-trained CLIP model. Defaults to "openai/clip-vit-base-patch32".
-                device (str, optional): The device to use for running the model. Defaults to "cuda".
-                csv_file (str, optional): The path to the CSV file containing image embeddings. Defaults to '../image_embeddings.csv'.
-            """
-            self.model = CLIPModel.from_pretrained(model_name).to(device)
-            self.processor = CLIPProcessor.from_pretrained(model_name)
-            self.device = device
-            df = pd.read_csv(csv_file)
-            df['embedding'] = df['embedding'].apply(ast.literal_eval)
-            self.embeddings_df = df
+        Args:
+            model_name (str, optional): The name or path of the pre-trained CLIP model. Defaults to "openai/clip-vit-base-patch32".
+            device (str, optional): The device to use for running the model. Defaults to "cuda".
+            csv_file (str, optional): The path to the CSV file containing image embeddings. Defaults to '../image_embeddings.csv'.
+        """
+        self.model = CLIPModel.from_pretrained(model_name).to(device)
+        self.processor = CLIPProcessor.from_pretrained(model_name)
+        self.device = device
+        df = pd.read_csv(csv_file)
+        df['embedding'] = df['embedding'].apply(ast.literal_eval)
+        self.embeddings_df = df
 
     def get_text_embedding(self, prompt):
-            """
-            Get the text embedding for a given prompt.
+        """
+        Get the text embedding for a given prompt.
 
-            Args:
-                prompt (str): The text prompt.
+        Args:
+            prompt (str): The text prompt.
 
-            Returns:
-                numpy.ndarray: The text embedding as a flattened numpy array.
-            """
-            inputs = self.processor(text=prompt, return_tensors="pt", padding=True)
-            with torch.no_grad():
-                text_features = self.model.get_text_features(**inputs)
-            return text_features.cpu().numpy().flatten()
+        Returns:
+            numpy.ndarray: The text embedding as a flattened numpy array.
+        """
+        inputs = self.processor(text=prompt, return_tensors="pt", padding=True)
+        with torch.no_grad():
+            text_features = self.model.get_text_features(**inputs)
+        return text_features.cpu().numpy().flatten()
     
 
     def find_top_similar_images(self, prompt, top_n=5):
