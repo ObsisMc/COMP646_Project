@@ -34,7 +34,7 @@ class TestImageProcesser:
             self.mask = self.original = None
         
         
-        masks = test_mask(img, coords, [1], self.sam_model_type, self.sam_ckpt)
+        masks = test_mask(img, coords[::-1], [1], self.sam_model_type, self.sam_ckpt)
         self.mask = masks[1]
         
         # store original img
@@ -60,11 +60,14 @@ class TestImageProcesser:
         
         # remove original object
         mask_centers, res_inpaint_list, mask_bboxs = remove_anything(self.original, self.dilate_kernel_size, self.lama_config, self.lama_ckpt, [self.mask])
-        (x_center, y_center), img, bbox = mask_centers[0], res_inpaint_list[0], mask_bboxs[0]
+        (y_center, x_center), img, bbox = mask_centers[0], res_inpaint_list[0], mask_bboxs[0]
+        print(x_center, y_center)
         
         # resize
-        h_o, w_o = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        h_o, w_o = bbox[3] - bbox[1], bbox[2] - bbox[0]
         h_s, w_s = segment.shape[:2]
+        print(h_o, w_o)
+        print(h_s, w_s)
         ratio = int(np.sqrt(h_o * w_o / h_s / w_s))
         h_r, w_r = h_s * ratio, w_s * ratio
         
@@ -84,6 +87,10 @@ class TestImageProcesser:
         replace_mask_whole = np.pad(replace_mask, ((x_min, H - x_max), (y_min, W - y_max))).astype(bool)
         replace_mask = replace_mask.astype(bool)
         img[replace_mask_whole] = segment_resize[replace_mask]
+        
+        test_img = np.zeros_like(img)
+        test_img[replace_mask_whole] = (255, 255, 255)
+        cv2.imwrite("test.png", test_img)
         
         self.mask = None
         self.original = None
