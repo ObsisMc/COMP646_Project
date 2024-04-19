@@ -1,8 +1,8 @@
 import gradio as gr
-from image_collage.test_fns import TestImageProcesser
+from image_collage.image_process import ImageProcesser
 
 
-image_processer = TestImageProcesser(segments_dir="/home/rz60/codes/COMP646/COMP646_Project/segments_pool", 
+image_processer = ImageProcesser(segments_dir="/home/rz60/codes/COMP646/COMP646_Project/segments_pool", 
                                      embed_path="./image_embeddings.csv")
 
 def process_inputs(image, text_input=None, click_coords=None):

@@ -2,12 +2,11 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from remove_anything.remove_anything_function import remove_anything, test_mask
-from utils.clip import CLIPModelWrapper
+from image_collage.clip import CLIPModelWrapper
 import time
 
 
-
-class TestImageProcesser:
+class ImageProcesser:
     def __init__(self, segments_dir, embed_path) -> None:
         self.mask = None
         self.original = None
@@ -68,8 +67,8 @@ class TestImageProcesser:
         h_s, w_s = segment.shape[:2]
         print(h_o, w_o)
         print(h_s, w_s)
-        ratio = int(np.sqrt(h_o * w_o / h_s / w_s))
-        h_r, w_r = h_s * ratio, w_s * ratio
+        ratio = np.sqrt(h_o * w_o / h_s / w_s)
+        h_r, w_r = int(h_s * ratio), int(w_s * ratio)
         
         x_min, y_min = x_center - h_r // 2, y_center - w_r // 2
         x_max, y_max = x_center + h_r // 2, y_center + w_r // 2
@@ -79,6 +78,7 @@ class TestImageProcesser:
         if y_max >= W: y_max = W - 1
         h_r, w_r = x_max - x_min, y_max - y_min
         
+        print(f"resize from {segment.shape[:2]} to {h_r, w_r}")
         segment_resize = cv2.resize(segment, (w_r, h_r))
         
         # replace
