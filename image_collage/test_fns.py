@@ -8,7 +8,7 @@ import time
 
 
 class TestImageProcesser:
-    def __init__(self) -> None:
+    def __init__(self, segments_dir, embed_path) -> None:
         self.mask = None
         self.original = None
         
@@ -18,7 +18,7 @@ class TestImageProcesser:
         self.lama_ckpt = "./remove_anything/pretrained_models/big-lama"
         self.dilate_kernel_size = 15
         
-        self.clip_wrapper = CLIPModelWrapper(image_dir="./segments_pool", csv_file="./image_embeddings.csv")
+        self.clip_wrapper = CLIPModelWrapper(image_dir=segments_dir, csv_file=embed_path)
         
     
     def click_process(self, img: np.ndarray, coords: list):
@@ -89,3 +89,6 @@ class TestImageProcesser:
         self.original = None
         
         return img
+    
+    def reset(self):
+        self.mask = self.original = None

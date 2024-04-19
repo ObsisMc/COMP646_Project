@@ -2,7 +2,8 @@ import gradio as gr
 from image_collage.test_fns import TestImageProcesser
 
 
-image_processer = TestImageProcesser()
+image_processer = TestImageProcesser(segments_dir="/home/rz60/codes/COMP646/COMP646_Project/segments_pool", 
+                                     embed_path="./image_embeddings.csv")
 
 def process_inputs(image, text_input=None, click_coords=None):
     message = "You uploaded an image."
@@ -25,20 +26,25 @@ def process_by_click_img(img, evt: gr.SelectData):
 
 def process_by_text_prompt(img, text):
     prompt = text
-    img_processed = img # TODO: need a function to get a processed image
+    img_processed = img
     return img_processed
 
 
 def replace_by_prompt(img, text):
-    img_new = image_processer.replace(img, text)  # TODO
+    img_new = image_processer.replace(img, text)
     print(text)
     return img_new
+
+
+def clear_image():
+    image_processer.reset()
 
 
 with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column():
             input_img = gr.Image(label="Input Image", show_download_button=True)
+            input_img.clear(clear_image)
             
         # with gr.Column():
         #     output_img = gr.Image(label="Output Image")
