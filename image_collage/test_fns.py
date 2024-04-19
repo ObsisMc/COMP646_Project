@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from remove_anything.remove_anything_function import remove_anything, test_mask
-
+from utils.clip import CLIPModelWrapper
 import time
 
 
@@ -17,6 +17,8 @@ class TestImageProcesser:
         self.lama_config = "./remove_anything/lama/configs/prediction/default.yaml"
         self.lama_ckpt = "./remove_anything/pretrained_models/big-lama"
         self.dilate_kernel_size = 15
+        
+        self.clip_wrapper = CLIPModelWrapper(image_dir="./segments_pool", csv_file="./image_embeddings.csv")
         
     
     def click_process(self, img: np.ndarray, coords: list):
@@ -46,11 +48,42 @@ class TestImageProcesser:
         return img
     
     def replace(self, img, text_prompt):
-        if self.original is None:
+        print(f"text prompt:", text_prompt)
+        if self.original is None or text_prompt in ["", None]:
             return img
         
-        mask_centers, res_inpaint_list = remove_anything(self.original, self.dilate_kernel_size, self.lama_config, self.lama_ckpt, [self.mask])
-        mask_center, img = mask_centers[0], res_inpaint_list[0]
+        H, W, C = img.shape
+        
+        # get segments
+        segments = self.clip_wrapper.find_top_similar_images(text_prompt, return_matrix=True)
+        segment = segments[0]
+        
+        # remove original object
+        mask_centers, res_inpaint_list, mask_bboxs = remove_anything(self.original, self.dilate_kernel_size, self.lama_config, self.lama_ckpt, [self.mask])
+        (x_center, y_center), img, bbox = mask_centers[0], res_inpaint_list[0], mask_bboxs[0]
+        
+        # resize
+        h_o, w_o = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        h_s, w_s = segment.shape[:2]
+        ratio = int(np.sqrt(h_o * w_o / h_s / w_s))
+        h_r, w_r = h_s * ratio, w_s * ratio
+        
+        x_min, y_min = x_center - h_r // 2, y_center - w_r // 2
+        x_max, y_max = x_center + h_r // 2, y_center + w_r // 2
+        if x_min < 0: x_min = 0
+        if y_min < 0: y_min = 0
+        if x_max >= H: x_max = H - 1
+        if y_max >= W: y_max = W - 1
+        h_r, w_r = x_max - x_min, y_max - y_min
+        
+        segment_resize = cv2.resize(segment, (w_r, h_r))
+        
+        # replace
+        replace_mask = np.zeros(segment_resize.shape[:2])
+        replace_mask[segment_resize.sum(axis=-1) != 0] = 1
+        replace_mask_whole = np.pad(replace_mask, ((x_min, H - x_max), (y_min, W - y_max))).astype(bool)
+        replace_mask = replace_mask.astype(bool)
+        img[replace_mask_whole] = segment_resize[replace_mask]
         
         self.mask = None
         self.original = None
