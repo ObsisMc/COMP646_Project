@@ -7,7 +7,11 @@ from PIL import Image
 import ast  # For converting string representations of lists into lists
 
 class CLIPModelWrapper:
-    def __init__(self, model_name="openai/clip-vit-base-patch32", device="cuda", csv_file='../image_embeddings.csv'):
+    def __init__(self, 
+                 model_name="openai/clip-vit-base-patch32", 
+                 device="cuda", 
+                 image_dir="./segments_pool",
+                 csv_file='./image_embeddings.csv'):
         """
         Initializes a Clip object.
 
@@ -22,7 +26,8 @@ class CLIPModelWrapper:
         df = pd.read_csv(csv_file)
         df['embedding'] = df['embedding'].apply(ast.literal_eval)
         self.embeddings_df = df
-
+        self.image_dir = image_dir
+        
     def get_text_embedding(self, prompt):
         """
         Get the text embedding for a given prompt.
@@ -34,6 +39,7 @@ class CLIPModelWrapper:
             numpy.ndarray: The text embedding as a flattened numpy array.
         """
         inputs = self.processor(text=prompt, return_tensors="pt", padding=True)
+        inputs = {k: v.to(self.device) for k, v in inputs.items()}
         with torch.no_grad():
             text_features = self.model.get_text_features(**inputs)
         return text_features.cpu().numpy().flatten()
@@ -61,3 +67,10 @@ class CLIPModelWrapper:
         top_indices = np.argsort(similarities)[::-1][:top_n]  # Get indices of top N similarities
 
         return self.embeddings_df.iloc[top_indices]['image_file_name'].tolist()
+
+
+if __name__ == "__main__":
+    clip_wrapper = CLIPModelWrapper(csv_file="image_embeddings.csv")
+    
+    file_names = clip_wrapper.find_top_similar_images("a cat")
+    print(file_names)
