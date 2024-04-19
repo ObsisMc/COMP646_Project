@@ -4,6 +4,8 @@ import numpy as np
 from transformers import CLIPProcessor, CLIPModel
 from scipy.spatial.distance import cosine
 from PIL import Image
+import cv2
+import os
 import ast  # For converting string representations of lists into lists
 
 class CLIPModelWrapper:
@@ -45,7 +47,7 @@ class CLIPModelWrapper:
         return text_features.cpu().numpy().flatten()
     
 
-    def find_top_similar_images(self, prompt, top_n=5):
+    def find_top_similar_images(self, prompt, top_n=5, return_matrix=False):
         """
         Finds the top N similar images based on a given prompt.
 
@@ -65,12 +67,22 @@ class CLIPModelWrapper:
             similarities.append(similarity)
 
         top_indices = np.argsort(similarities)[::-1][:top_n]  # Get indices of top N similarities
-
-        return self.embeddings_df.iloc[top_indices]['image_file_name'].tolist()
+        file_names = self.embeddings_df.iloc[top_indices]['image_file_name'].tolist()
+        
+        if not return_matrix:
+            return file_names
+        
+        imgs_mat = []
+        for f in file_names:
+            file_path = os.path.join(self.image_dir, f)
+            img = cv2.imread(file_path)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            imgs_mat.append(img)
+        return imgs_mat
 
 
 if __name__ == "__main__":
     clip_wrapper = CLIPModelWrapper(csv_file="image_embeddings.csv")
     
-    file_names = clip_wrapper.find_top_similar_images("a cat")
+    file_names = clip_wrapper.find_top_similar_images("a cat", return_matrix=True)
     print(file_names)
