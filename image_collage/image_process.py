@@ -46,7 +46,7 @@ class ImageProcesser:
         
         return img
     
-    def replace(self, img, text_prompt):
+    def replace(self, img, text_prompt, seamless=False):
         print(f"text prompt:", text_prompt)
         if self.original is None or text_prompt in ["", None]:
             return img
@@ -82,15 +82,24 @@ class ImageProcesser:
         segment_resize = cv2.resize(segment, (w_r, h_r))
         
         # replace
-        replace_mask = np.zeros(segment_resize.shape[:2])
-        replace_mask[segment_resize.sum(axis=-1) != 0] = 1
-        replace_mask_whole = np.pad(replace_mask, ((x_min, H - x_max), (y_min, W - y_max))).astype(bool)
-        replace_mask = replace_mask.astype(bool)
-        img[replace_mask_whole] = segment_resize[replace_mask]
+        if seamless:
+            mask = np.zeros_like(segment_resize)
+            mask[segment_resize.sum(axis=-1) != 0] = 1
+            mask *= 255
+            
+            img = cv2.seamlessClone(segment_resize, img, mask, ((y_max + y_min) // 2, (x_max + x_min) // 2), flags=cv2.NORMAL_CLONE)
+            
+        else:
+            mask = np.zeros(segment_resize.shape[:2])
+            mask[segment_resize.sum(axis=-1) != 0] = 1
+            bg_mask = np.pad(mask, ((x_min, H - x_max), (y_min, W - y_max))).astype(bool)
+            mask = mask.astype(bool)
+            img[bg_mask] = segment_resize[mask]
         
-        test_img = np.zeros_like(img)
-        test_img[replace_mask_whole] = (255, 255, 255)
-        cv2.imwrite("test.png", test_img)
+        
+        # test_img = np.zeros_like(img)
+        # test_img[replace_mask_whole] = (255, 255, 255)
+        # cv2.imwrite("test.png", test_img)
         
         self.mask = None
         self.original = None
