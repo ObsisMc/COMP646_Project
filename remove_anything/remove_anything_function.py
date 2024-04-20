@@ -41,6 +41,7 @@ def remove_anything(img, dilate_kernel_size,
     
     
     mask_centers = []
+    mask_bboxs = []
     for idx, mask in enumerate(masks):
         white_points = np.argwhere(mask == 255)
         x_min = white_points[:, 1].min()
@@ -50,6 +51,7 @@ def remove_anything(img, dilate_kernel_size,
         center_x = (x_min + x_max) // 2
         center_y = (y_min + y_max) // 2
         mask_centers.append((center_x, center_y))
+        mask_bboxs.append((x_min, y_min, x_max, y_max))
     
-    return mask_centers, res_inpaint_list
+    return mask_centers, res_inpaint_list, mask_bboxs
 
