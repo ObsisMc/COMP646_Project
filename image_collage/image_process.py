@@ -3,7 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from remove_anything.remove_anything_function import remove_anything, test_mask
 from image_collage.clip import CLIPModelWrapper
-import time
+
+import torch
+import torch.nn.functional as F
+
 
 
 class ImageProcesser:
@@ -46,7 +49,7 @@ class ImageProcesser:
         
         return img
     
-    def replace(self, img, text_prompt, seamless=False):
+    def replace(self, img, text_prompt, mode=2):
         print(f"text prompt:", text_prompt)
         if self.original is None or text_prompt in ["", None]:
             return img
@@ -82,13 +85,27 @@ class ImageProcesser:
         segment_resize = cv2.resize(segment, (w_r, h_r))
         
         # replace
-        if seamless:
+        if mode == 1:
             mask = np.zeros_like(segment_resize)
             mask[segment_resize.sum(axis=-1) != 0] = 1
             mask *= 255
             
             img = cv2.seamlessClone(segment_resize, img, mask, ((y_max + y_min) // 2, (x_max + x_min) // 2), flags=cv2.NORMAL_CLONE)
             
+        elif mode == 2:
+            mask = np.zeros(segment_resize.shape[:2])
+            mask[segment_resize.sum(axis=-1) != 0] = 1
+            mask = mask.astype(bool)
+            
+            bg_crop = img[x_min:x_max, y_min:y_max]
+            bg_crop[mask] = segment_resize[mask]
+            print(f"bg crop size: {bg_crop.shape}")
+            bg_crop_smoothed = self.smoothize(bg_crop)
+            print(f"bg crop smooth size: {bg_crop_smoothed.shape}")
+            
+            bg_h, bg_W, _ = bg_crop_smoothed.shape
+            img[x_min + 1: x_max - 1, y_min + 1: y_max - 1] = bg_crop_smoothed[1:bg_h - 1, 1:bg_W - 1]
+        
         else:
             mask = np.zeros(segment_resize.shape[:2])
             mask[segment_resize.sum(axis=-1) != 0] = 1
@@ -105,6 +122,28 @@ class ImageProcesser:
         self.original = None
         
         return img
+    
+    
+    def smoothize(self, img: np.ndarray):
+        kernel_size = 3
+        stride = 1
+        
+        # Convert the image to a tensor
+        img_tensor = torch.from_numpy(img).permute(2, 0, 1).float()
+        img_tensor = img_tensor.to(torch.float32)  # Ensure the tensor is in float32 for the AvgPool operation
+        img_tensor = img_tensor.unsqueeze(0)
+
+        # Check if image tensor needs to be normalized (having pixel values between 0 and 1)
+        if img_tensor.max() > 1.0:
+            img_tensor /= 255.0
+
+        # Apply AvgPool2d with kernel size 3, stride 1, and padding 1 to maintain the original image size
+        smoothed_img_tensor = F.avg_pool2d(img_tensor, kernel_size, stride, padding=1)
+
+        # Convert the smoothed tensor back to a PIL image with proper scaling
+        smoothed_img = (smoothed_img_tensor.squeeze(0).permute(1, 2, 0).clamp(0, 1) * 255).byte().numpy()
+        
+        return smoothed_img
     
     def reset(self):
         self.mask = self.original = None
