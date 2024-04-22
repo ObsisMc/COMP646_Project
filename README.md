@@ -32,6 +32,20 @@ conda env create -f evironment.yaml
 ## Data preparation
 
 ### Dataset
+We use **Pascal VOC 2012** dataset to build our segment pool.
+
+1. First, download the dataset from [Kaggle](https://www.kaggle.com/datasets/huanghanchina/pascal-voc-2012)
+2. Modify the path variables `root` and `output_dir` in `utils/data_preprocesser.py` and run it
+    ```python
+    # modify the path in `utils/data_preprocesser.py`
+    root = "{your_dataset_path}"
+    output_dir = "{path_of_this_repo}/segments_pool"
+
+    # run in Shell
+    python utils/data_preprocesser
+    ```
+
+Then, there be a directory called `segments_pool` under the root of this porject.
 
 ### Model Checkpoints
 
@@ -43,25 +57,6 @@ gdown https://drive.google.com/drive/folders/1wpY-upCo4GIW4wVPnlMh_ym779lLIG2A-O
 ```
 
 In addition, `CLIP` will be downloaded during run time.
-
-## Remove Anything
-1. cd COMP646_Project/remove_anything
-2. python remove_anything.py \
-    --input_img ./remove-anything/dog.jpg \
-    --coords_type key_in \
-    --point_coords 200 450 \
-    --point_labels 1 \
-    --dilate_kernel_size 15 \
-    --output_dir ./results \
-    --sam_model_type "vit_h" \
-    --sam_ckpt {YOUR PRETRAINED MODEL PATH}/pretrained_models/sam_vit_h_4b8939.pth \
-    --lama_config ./lama/configs/prediction/default.yaml \
-    --lama_ckpt {YOUR PRETRAINED MODEL PATH}/pretrained_models/big-lama
-3. Directly download pretrained_models from this link: https://drive.google.com/drive/folders/1ST0aRbDRZGli0r7OVVOQvXwtadMCuWXg
-pip install gdown
-gdown https://drive.google.com/drive/folders/1wpY-upCo4GIW4wVPnlMh_ym779lLIG2A-O {removing_anything folder}/pretrained_models--folder
-
-
 
 
 ## Main components and technologies
