@@ -3,7 +3,7 @@ from image_collage.image_process import ImageProcesser
 
 
 image_processer = ImageProcesser(segments_dir="/home/rz60/codes/COMP646/COMP646_Project/segments_pool", 
-                                     embed_path="./image_embeddings.csv")
+                                     embed_path="./data/image_embeddings.csv")
 
 def process_inputs(image, text_input=None, click_coords=None):
     message = "You uploaded an image."
