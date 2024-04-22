@@ -80,26 +80,14 @@ In addition, `CLIP` will be downloaded during run time.
 
 
 ## Use case
+![Use Case](.assets/usecase.png)
 
-We have a user-friendly GUI. The general use case is 
+The general use case is 
 1. user inputs an image
 2. the GUI shows the input image
 3. user inputs prompt (clicks the image or uses text prompt) to select an object in the image
 4. user inputs a text prompt then our system replaces the selected object with the most relevant object retrieved from the segment pool
 5. user can repeat step 3-4 to modify the input image 
 
-[maybe there is a figure to show use case]
-
-
-# Plan for Progress Report
-
-* Introduce
-* (Our main components and use case)
-* Dataset
-* Core Module (our test on the core models, if not, just copy images from others)
-* Initial Result (if possible)
-
-============ Before ======================
-* Validate idea (use Pascal as segments pool)
-* Match images' seams (SURF...)
-* Output image
+The front end is shown in the following figure
+![Front End](.assets/frontend.png)
