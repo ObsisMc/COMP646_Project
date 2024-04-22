@@ -1,5 +1,29 @@
 # Image Collage
 
+![showcase](.assets/showcase.png)
+
+TBD 
+
+Abstract: 
+Generating image descriptions has been a popular task
+in computer vision in recent years. Popular image datasets
+for this task such as the MS-COCO dataset include image
+captions collected using crowdsourcing. However, these de-
+scriptions might not apply to other image domains where
+context plays a bigger role. We focus on this work in de-
+scribing historical photographs obtained from the US Li-
+brary of Congress. In our project we explore the use of an
+encoder-decoder framework where the input image is used
+as input to a convolutional neural network (CNN), and the
+output is fed onto a recurrent neural network (RNN) that
+translates visual features into language. We train our model
+on descriptions from the US Library of Congress, and com-
+pare its performance to a model trained on the MS-COCO
+Dataset using standard metrics. We show that using both
+in-domain images and text are crucial to obtain competitive
+performance on this task.
+
+
 ## Installation
 
 Some important libraries
