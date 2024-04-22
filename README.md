@@ -79,15 +79,18 @@ In addition, `CLIP` will be downloaded during run time.
 
 
 
-## Use case
-![Use Case](.assets/usecase.png)
+## Getting started
 
-The general use case is 
+After preparation, just run `python demo.py`, you can enjoy our application that looks like the following figure
+![Front End](.assets/frontend.png)
+
+The general usage is 
 1. user inputs an image
 2. the GUI shows the input image
 3. user inputs prompt (clicks the image or uses text prompt) to select an object in the image
 4. user inputs a text prompt then our system replaces the selected object with the most relevant object retrieved from the segment pool
 5. user can repeat step 3-4 to modify the input image 
 
-The front end is shown in the following figure
-![Front End](.assets/frontend.png)
+![Use Case](.assets/usecase.png)
+
+
