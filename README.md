@@ -1,4 +1,48 @@
-# COMP646 Project: Image Collages
+# Image Collage
+
+## Installation
+
+Some important libraries
+
+```shell
+pip install torch torchvision torchaudio  # pytorch
+pip install opencv-python  # opencv
+pip install PIL  # PIL
+pip install numpy pandas matplotlib  # others
+
+
+# For CLIP 
+pip install transformers
+
+# For remove_anything
+cd remove_anything
+pip install -e segment_anything
+pip install -r lama/requirements.txt
+
+# For Front end
+pip install gradio
+
+```
+
+You can also use `environment.yml` to install
+```shell
+conda env create -f evironment.yaml
+```
+
+## Data preparation
+
+### Dataset
+
+### Model Checkpoints
+
+You need to download checkpoints of `remove_anything`, which includes two models [SAM](https://github.com/facebookresearch/segment-anything) and [Lama](https://github.com/advimman/lama), from [Google drive](https://drive.google.com/drive/folders/1ST0aRbDRZGli0r7OVVOQvXwtadMCuWXg). You can also download it using command line:
+
+```shell
+pip install gdown
+gdown https://drive.google.com/drive/folders/1wpY-upCo4GIW4wVPnlMh_ym779lLIG2A-O removing_anything/pretrained_models --folder  # download to remove_anything folder
+```
+
+In addition, `CLIP` will be downloaded during run time.
 
 ## Remove Anything
 1. cd COMP646_Project/remove_anything
