@@ -2,26 +2,13 @@
 
 ![showcase](.assets/showcase.png)
 
-TBD 
-
-Abstract: 
-Generating image descriptions has been a popular task
-in computer vision in recent years. Popular image datasets
-for this task such as the MS-COCO dataset include image
-captions collected using crowdsourcing. However, these de-
-scriptions might not apply to other image domains where
-context plays a bigger role. We focus on this work in de-
-scribing historical photographs obtained from the US Li-
-brary of Congress. In our project we explore the use of an
-encoder-decoder framework where the input image is used
-as input to a convolutional neural network (CNN), and the
-output is fed onto a recurrent neural network (RNN) that
-translates visual features into language. We train our model
-on descriptions from the US Library of Congress, and com-
-pare its performance to a model trained on the MS-COCO
-Dataset using standard metrics. We show that using both
-in-domain images and text are crucial to obtain competitive
-performance on this task.
+This project integrates state-of-the-art computer vision techniques to address these challenges. Utilizing a segments pool from the
+Pascal VOC 2012 dataset, we leverage the Segment Anything Model (SAM) for precise object segmentation, followed by LaMa for resolution-robust inpainting. 
+The Contrastive Language–Image Pre-training (CLIP) model is then employed to retrieve and position contextually relevant segments from the pool based on textual prompts. 
+We present an automated pipeline that scales and places these segments into the voids left by object removal, focusing onmaintaining the original image’s perspective 
+and proportions. Our results demonstrate the pipeline’s effectiveness in various scenarios, albeit with some limitations in the refinement stage, 
+where traditional blending methods like diffusion and seamlessClone were less successful. This report provides a comprehensive analysis of our methodology, 
+results, and the potential avenues for advancing automated image editing.
 
 
 ## Installation
