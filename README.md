@@ -1,6 +1,6 @@
 # Image Collage
 
-![showcase](.assets/showcase.png)
+![showcase](.assets/showcase_arrow.png)
 
 This project integrates state-of-the-art computer vision techniques to address these challenges. Utilizing a segments pool from the
 Pascal VOC 2012 dataset, we leverage the Segment Anything Model (SAM) for precise object segmentation, followed by LaMa for resolution-robust inpainting. 
