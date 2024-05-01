@@ -9,10 +9,12 @@ import tqdm
 
 
 root = "/home/sl237/COMP646_Project/VOCdevkit/VOC2012"
+output_dir = f"/home/rz60/codes/COMP646/COMP646_Project/segments_pool"
 anno_root = os.path.join(root, "Annotations") 
 segob_root = os.path.join(root, "SegmentationObject")
 segcls_root = os.path.join(root, "SegmentationClass")
 img_root = os.path.join(root, "JPEGImages")
+
 
 def reshapeXML(file_path):
     tree = ET.ElementTree(ET.parse(file_path))
@@ -208,5 +210,4 @@ def export_all_instances(output_dir):
 
 
 if __name__ == "__main__":
-    output_dir = f"/home/rz60/codes/COMP646/COMP646_Project/segments_pool"
     export_all_instances(output_dir)
