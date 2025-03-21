@@ -1,4 +1,4 @@
-# Image Collage
+# Image Collage Maker
 
 ![showcase](.assets/showcase_arrow.png)
 
